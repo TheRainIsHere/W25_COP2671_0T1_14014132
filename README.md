@@ -1,4 +1,4 @@
-### GIT repository for W25_COP2671_0T1
+### GIT repository for W25_COP2671_0T1_14014132
 ---
 **Contents**
 - **Example** Folder - contains a SampleProject (Unity 6) showing the directory structure required for this course. Refer back to this project when in doubt.
