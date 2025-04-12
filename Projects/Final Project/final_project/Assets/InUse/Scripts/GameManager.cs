@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> targets;
     private float spawnRate = 1.0f;
     private float orderRate = 2.0f;
+    public AudioSource soundFX;
     // Stats
     private int totalOres;
     private int totalBlowers;
@@ -55,6 +57,12 @@ public class GameManager : MonoBehaviour
             int index = UnityEngine.Random.Range(0, targets.Count);
             Instantiate(targets[index]);
         }
+    }
+
+    public void PlaySFX(AudioResource itemSFX)
+    {
+        soundFX.resource = itemSFX;
+        soundFX.Play();
     }
 
     public void UpdateScore(int itemNumber)

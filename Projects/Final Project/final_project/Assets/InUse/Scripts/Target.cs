@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Target : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Target : MonoBehaviour
     private float xRange = 4;
     private float ySpawnPos = -2;
 
+    public AudioResource itemSFX;
     public ParticleSystem explosionParticle;
     public int itemNumber;
 
@@ -36,6 +38,7 @@ public class Target : MonoBehaviour
     {
         if (gameManager.isGameActive)
         {
+            gameManager.PlaySFX(itemSFX);
             Destroy(gameObject);
             Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
             gameManager.UpdateScore(itemNumber);
