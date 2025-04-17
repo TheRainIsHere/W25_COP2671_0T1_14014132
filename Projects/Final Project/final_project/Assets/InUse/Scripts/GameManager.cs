@@ -14,17 +14,21 @@ public class GameManager : MonoBehaviour
     private float orderRate = 2.0f;
     public AudioSource soundFX;
     // Stats
+    private bool orderInPrg = false;
     private int totalOres;
     private int totalBlowers;
     private int totalAnvils;
     private int totalBuckets;
+    private int totalOrders;
     public TextMeshProUGUI oreText;
     public TextMeshProUGUI blowerText;
     public TextMeshProUGUI anvilText;
     public TextMeshProUGUI bucketText;
+    public TextMeshProUGUI ordersText;
     // Menus
     public GameObject gameOverMenu;
     public GameObject titleMenu;
+    public GameObject pauseMenu;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -44,8 +48,8 @@ public class GameManager : MonoBehaviour
         titleMenu.SetActive(false);
         UpdateScore(0);
 
-        orderRate = speed * 2;
         StartCoroutine(SpawnTarget());
+        StartCoroutine(CreateOrders(speed));
     }
 
     IEnumerator SpawnTarget()
@@ -59,6 +63,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    IEnumerator CreateOrders(float speed)
+    {
+        orderRate = (float)(speed * 2);
+        while (isGameActive)
+        {
+            yield return new WaitForSeconds(orderRate);
+
+            totalOrders++;
+            ordersText.text = totalOrders.ToString();
+        }
+    }
+    IEnumerator CompleteOrder()
+    {
+        while (isGameActive)
+        {
+            yield return null;
+        }
+        if (totalOres > 0 && totalBlowers > 0 && totalAnvils > 0 && totalBuckets > 0 && totalOrders > 0)
+        {
+            // Remove one from each
+        }
+    }
+
     public void PlaySFX(AudioResource itemSFX)
     {
         soundFX.resource = itemSFX;
@@ -67,8 +94,6 @@ public class GameManager : MonoBehaviour
 
     public void UpdateScore(int itemNumber)
     {
-        int goblinItem;
-
         switch(itemNumber)
         {
             case 0:
@@ -92,18 +117,16 @@ public class GameManager : MonoBehaviour
                 break;
             case 5:
                 // Goblin
+                int goblinItem;
                 goblinItem = UnityEngine.Random.Range(1, targets.Count - 1);
                 ResetScores(goblinItem);
                 Debug.Log("Goblin clicked");
                 break;
             default:
-                oreText.text = totalOres.ToString();
-                blowerText.text = totalBlowers.ToString();
-                anvilText.text = totalAnvils.ToString();
-                bucketText.text = totalBuckets.ToString();
                 break;
         }
 
+        // Update the score labels
         oreText.text = totalOres.ToString();
         blowerText.text = totalBlowers.ToString();
         anvilText.text = totalAnvils.ToString();
@@ -127,6 +150,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        // Call for scores to be updated using an invalid case to break out of switch
         UpdateScore(-1);
     }
 }
