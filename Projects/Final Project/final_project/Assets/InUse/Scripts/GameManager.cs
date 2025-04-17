@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void StartGame(float speed)
@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(SpawnTarget());
         StartCoroutine(CreateOrders(speed));
+        StartCoroutine(CompleteOrder());
     }
 
     IEnumerator SpawnTarget()
@@ -78,12 +79,25 @@ public class GameManager : MonoBehaviour
     {
         while (isGameActive)
         {
-            yield return null;
+            yield return new WaitForSeconds(1.5f);
+
+            if (totalOres > 0 && totalBlowers > 0 && totalAnvils > 0 && totalBuckets > 0 && totalOrders > 0 && !orderInPrg)
+            {
+                Debug.Log("Completing next order");
+
+                orderInPrg = true;
+                // Remove one from each stage & order
+                totalOres--;
+                totalBlowers--;
+                totalAnvils--;
+                totalBuckets--;
+                totalOrders--;
+                //new WaitForSeconds(1.5f);
+                UpdateScore(-1);
+                orderInPrg = false;
+            }
         }
-        if (totalOres > 0 && totalBlowers > 0 && totalAnvils > 0 && totalBuckets > 0 && totalOrders > 0)
-        {
-            // Remove one from each
-        }
+        
     }
 
     public void PlaySFX(AudioResource itemSFX)
@@ -131,6 +145,7 @@ public class GameManager : MonoBehaviour
         blowerText.text = totalBlowers.ToString();
         anvilText.text = totalAnvils.ToString();
         bucketText.text = totalBuckets.ToString();
+        ordersText.text = totalOrders.ToString();
     }
     private void ResetScores(int itemNumber)
     {
