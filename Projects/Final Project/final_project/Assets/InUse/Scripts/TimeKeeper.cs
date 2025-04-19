@@ -5,10 +5,11 @@ using UnityEngine.Events;
 
 public class TimeKeeper : MonoBehaviour
 {
-    private float timeLeft;
+    public float timeLeft;
     public TextMeshProUGUI timerText;
     private bool timerActive = false;
     public UnityEvent timeOver;
+    public UnityEvent timeToggled;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

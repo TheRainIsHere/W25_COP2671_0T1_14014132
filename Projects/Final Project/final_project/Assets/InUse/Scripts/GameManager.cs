@@ -2,17 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     // BTS Management
     public bool isGameActive;
+    private bool isGameOver = true;
     public List<GameObject> targets;
     private float spawnRate = 1.0f;
+    private float orderRate = 1.0f;
     public AudioSource soundFX;
     public Slider orderBar;
     public TimeKeeper timeKeeper;
@@ -38,13 +42,20 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         timeKeeper.timeOver.AddListener(GameOver);
+        //timeKeeper.timeToggled.AddListener(PauseResume);
+        gameOverMenu.SetActive(false);
+        pauseMenu.SetActive(false);
+        titleMenu.SetActive(true);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        // if game is active, run timer
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseResume();
+        }
     }
 
     /// <summary>
@@ -55,6 +66,7 @@ public class GameManager : MonoBehaviour
     {
         // Set game active
         isGameActive = true;
+        isGameOver = false;
         // Close title menu and reset scores
         titleMenu.SetActive(false);
         UpdateScore(0);
@@ -62,9 +74,11 @@ public class GameManager : MonoBehaviour
         // Start Timer
         timeKeeper.StartTimer(1.5f);
 
+        orderRate = speed;
+
         // Begin all necessary coroutines
         StartCoroutine(SpawnTarget());
-        StartCoroutine(CreateOrders(speed));
+        StartCoroutine(CreateOrders());
         StartCoroutine(CompleteOrder());
     }
 
@@ -78,10 +92,9 @@ public class GameManager : MonoBehaviour
             Instantiate(targets[index]);
         }
     }
-
-    IEnumerator CreateOrders(float speed)
+    IEnumerator CreateOrders()
     {
-        float orderRate = speed * 2f;
+        orderRate *= 2f;
         while (isGameActive)
         {
             yield return new WaitForSeconds(orderRate);
@@ -185,10 +198,42 @@ public class GameManager : MonoBehaviour
         // Call for scores to be updated using an invalid case to break out of switch
         UpdateScore(-1);
     }
+    private void PauseResume()
+    {
+        if (isGameActive)
+        {
+            isGameActive = false;
+            timeKeeper.PauseTimer();
+            pauseMenu.SetActive(true);
+        }
+        else if (!isGameActive && !isGameOver)
+        {
+            isGameActive = true;
+            timeKeeper.ResumeTimer();
+            pauseMenu.SetActive(false);
 
+            // Restart all necessary coroutines
+            StartCoroutine(SpawnTarget());
+            StartCoroutine(CreateOrders());
+            StartCoroutine(CompleteOrder());
+        }
+    }
+    public void QuitGame()
+    {
+        #if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+        #endif
+        Application.Quit();
+    }
+    public void RestartGame()
+    {
+        gameOverMenu.gameObject.SetActive(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
     private void GameOver()
     {
         isGameActive = false;
+        isGameOver = true;
         gameOverMenu.SetActive(true);
     }
 }
