@@ -4,4 +4,4 @@
 1. **Assets** Folder
 2. **InUse** Folder
 3. **Scenes** Folder
-4. **Scene File: ** Rhyn's Wares.unity
+4. **Scene File:** Rhyn's Wares.unity
