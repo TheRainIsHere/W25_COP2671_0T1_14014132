@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSFX: {fileID: 8300000, guid: 914a4a2a124d040df96bf13308aadc2e, type: 3}
-  explosionParticle: {fileID: 198738731738625552, guid: 21461e6c060baf044ac3e717ed4170cb, type: 3}
+  explosionParticle: {fileID: 198598745608626540, guid: 1b85934f3ab9f88409e04178ece71a05, type: 3}
   itemNumber: 2
 --- !u!54 &3996785876137575666
 Rigidbody:

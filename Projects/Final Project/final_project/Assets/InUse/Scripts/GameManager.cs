@@ -28,11 +28,15 @@ public class GameManager : MonoBehaviour
     private int totalAnvils;
     private int totalBuckets;
     private int totalOrders;
+    private int completeOrders;
+    private int allOrders;
     public TextMeshProUGUI oreText;
     public TextMeshProUGUI blowerText;
     public TextMeshProUGUI anvilText;
     public TextMeshProUGUI bucketText;
     public TextMeshProUGUI ordersText;
+    public TextMeshProUGUI finalScore;
+
     // Menus
     public GameObject gameOverMenu;
     public GameObject titleMenu;
@@ -70,6 +74,8 @@ public class GameManager : MonoBehaviour
         // Close title menu and reset scores
         titleMenu.SetActive(false);
         UpdateScore(0);
+        allOrders = 0;
+        completeOrders = 0;
 
         // Start Timer
         timeKeeper.StartTimer(1.5f);
@@ -100,6 +106,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(orderRate);
 
             totalOrders++;
+            allOrders++;
             ordersText.text = totalOrders.ToString();
         }
     }
@@ -111,9 +118,8 @@ public class GameManager : MonoBehaviour
 
             if (totalOres > 0 && totalBlowers > 0 && totalAnvils > 0 && totalBuckets > 0 && totalOrders > 0 && !orderInPrg)
             {
-                Debug.Log("Completing next order");
-
                 orderInPrg = true;
+                completeOrders++;
 
                 // Remove one from each stage & order
                 totalOres--;
@@ -164,7 +170,6 @@ public class GameManager : MonoBehaviour
                 int goblinItem;
                 goblinItem = UnityEngine.Random.Range(1, targets.Count - 1);
                 ResetScores(goblinItem);
-                Debug.Log("Goblin clicked");
                 break;
             default:
                 break;
@@ -235,5 +240,6 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
         isGameOver = true;
         gameOverMenu.SetActive(true);
+        finalScore.text = completeOrders + " / " + allOrders + "\nOrders Complete";
     }
 }
